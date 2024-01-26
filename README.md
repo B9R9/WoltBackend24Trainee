@@ -1,12 +1,11 @@
 # WoltBackend24Trainee
 
-Brief description of your project.
-
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Task Description](#task-description)
 - [Installation](#installation)
+- [Migration](#database-migrations)
 - [Usage](#usage)
 - [Tests](#tests)
 - [Contact](#contact)
@@ -67,6 +66,9 @@ Example:
 
 ## Installation
 >pip install -r requirements.txt
+
+## Database Migrations
+>python manage.py migrate
 
 ## Usage
 >python manage.py runserver
