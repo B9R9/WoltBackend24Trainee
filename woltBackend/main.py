@@ -9,8 +9,11 @@ def send_curl_request():
         'Content-Type: application/json',
         '-d',
         # '{"invalid": "data"}',
-        '{"a": 10, "b": 20, "c": "example"}',
-        'http://localhost:8000/calculate/'
+        # '{"a": 10, "b": 20, "c": "example"}',
+        # '{"cart_value": 790, "delivery_distance": 2235, "number_of_items": "4", "time": "2024-01-15T13:00:00Z", "test": "test" }',
+        # '{"cart_value": 790, "delivery_distance": 2235, "number_of_items": "4"}',
+        '{"cart_value": 790, "delivery_distance": 2235, "number_of_items": "4", "time": "2024-01-15T13:00:00Z"}',
+        'http://localhost:8000/deliveryCalculator/'
     ]
 
     try:

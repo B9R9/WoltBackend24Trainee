@@ -1,28 +1,64 @@
 from django.test import TestCase
-import json
 from django.urls import reverse
-from django.http import JsonResponse
+import json
 
-# Create your tests here.
-class CalculateViewTest(TestCase):
+class CalculateDeliveryTestCase(TestCase):
+    def setUp(self):
+        # Set up the URL for the calculate_delivery view
+        self.url = reverse('calculate_delivery')  # Replace 'calculate_delivery' with the actual name of your view.
 
-	def test_calculate_view(self):
-		data = {'a': 1, 'b': 2}
+    def test_successful_calculation(self):
+        """Test the successful calculation of delivery fee."""
+        data = {
+            'cart_value': 1000,
+            'delivery_distance': 1500,
+            'number_of_items': 3,
+            'time': '2024-01-15T13:00:00Z',
+        }
+        response = self.client.post(self.url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        json_response = response.json()
+        self.assertIn('delivery_fee', json_response)
+        self.assertIsInstance(json_response['delivery_fee'], (int, float))
 
-		response = self.client.post(reverse('calculate'), data=json.dumps(data), content_type='application/json')
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual(response.json()['result'], 3)
-		self.assertJSONEqual(str(response.content, encoding='utf8'), json.dumps({'result': 3}))
-	
-	def test_calculate_view_with_invalid_data(self):
-		invalid_data = {'invalid': 'data'}
+    def test_missing_fields(self):
+        """Test handling missing fields in the input data."""
+        data = {
+            'cart_value': 1000,
+            'delivery_distance': 1500,
+            'time': '2024-01-15T13:00:00Z',
+        }
+        response = self.client.post(self.url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        json_response = response.json()
+        self.assertIn('error', json_response)
+        self.assertIn('number_of_items', json_response['error'])
 
-		response = self.client.post(reverse('calculate'), data=json.dumps(invalid_data), content_type='application/json')
-		self.assertEqual(response.status_code, 400)
+    def test_invalid_data(self):
+        """Test handling invalid data types in the input."""
+        data = {
+            'cart_value': 'invalid',
+            'delivery_distance': 'invalid',
+            'number_of_items': 'invalid',
+            'time': 'invalid',
+        }
+        response = self.client.post(self.url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        json_response = response.json()
+        self.assertIn('error', json_response)
+        self.assertIsInstance(json_response['error'], dict)
 
-		self.assertIn('error', response.json())
-    	# Vérifiez que le message d'erreur ne doit pas être une chaîne spécifique
-		self.assertIsInstance(response.json()['error'], str)
+    def test_negative_cart_value(self):
+        """Test handling a negative value for cart_value."""
+        data = {
+            'cart_value': -500,
+            'delivery_distance': 1500,
+            'number_of_items': 3,
+            'time': '2024-01-15T13:00:00Z',
+        }
+        response = self.client.post(self.url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        json_response = response.json()
+        self.assertIn('error', json_response)
+        self.assertIn('cart_value', json_response['error'])
 
-    	# Vous pouvez également vérifier si le message d'erreur contient une partie spécifique
-		self.assertIn('Invalid input data', response.json()['error'])
