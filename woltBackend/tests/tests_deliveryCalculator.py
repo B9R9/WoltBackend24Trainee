@@ -1,9 +1,13 @@
 from django.test import TestCase
 from datetime import datetime
-from .deliveryFeeCalculator import DeliveryFeeCalculator
-from .utils import DeliveryForm
+from deliveryCalculators.deliveryFeeCalculator import DeliveryFeeCalculator
+from deliveryCalculators.utils import DeliveryForm
+import logging
+
+logger = logging.getLogger('log')
 
 class DeliveryFeeCalculatorTest(TestCase):
+    logger.info('Testing the DeliveryFeeCalculator class.')
     def test_calculate_cost_regular_case(self):
         """Test the calculate_cost method with regular input values."""
         data = {
@@ -66,8 +70,11 @@ class DeliveryFeeCalculatorTest(TestCase):
         cost = calculator.calculate_cost(data)
         self.assertEqual(cost, 1500, f"Expected cost: 1500 got {cost}")  # Due to the maximum limit
 
+        logger.info('End of DeliveryFeeCalculator class tests.')
+
 
 class DeliveryFormTest(TestCase):
+    logger.info('Testing the DeliveryForm class.')
     def test_valid_data(self):
         """Test the DeliveryForm with valid input data."""
         data = {
@@ -130,3 +137,4 @@ class DeliveryFormTest(TestCase):
         self.assertIn('delivery_distance', form.errors)
         self.assertIn('Enter a whole number.', form.errors['delivery_distance'][0])
 
+    logger.info('End of DeliveryForm class tests.')

@@ -65,16 +65,60 @@ Example:
 |delivery_fee   |Integer|Calculated delivery fee __in cents__.  |__710__ (710 cents = 7.10€)|
 
 ## Installation
->pip install -r requirements.txt
+1. Create an virtual environment (Python 3.10.10 used) 
+```bash
+python3 -m venv venv
+```
+2. Activate the virtual environement.
+  - On Windows:
+```bash
+venv\Scripts\activate
+```
+  - On Unix or MacOS:
+```bash
+source venv/bin/activate
+```
+3. Install requirements:
+```bash
+pip install -r requirements.txt
+```
+To desactivate the virtual environement:
+  - On Window:
+  ```bash
+  path_to_env\Scripts\deactivate
+  ```
+  - On Unix or MacOS:
+```bash
+deactivate
+```
 
 ## Database Migrations
->python manage.py migrate
+```bash
+python manage.py migrate
+```
 
 ## Usage
->python manage.py runserver
+To start the development server, use the following command:
+```bash
+python manage.py runserver <address:port>
+```
+By default, the server uses localhost:8000. If you specify a different address, make sure to adjust the ALLOWED_HOSTS configuration in your [settings.py](woltBackend/settings.py) file to include that address. For example:
+```
+#setting.py
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'your_address']
+```
+Make sure to update this list according to your specific deployment needs.
+
+## Calling the API with curl:
+Exemple curl command:
+```bash
+curl --request POST "http://0.0.0.0:8000/deliveryCalculator/" --header 'Content-Type: application/json' --data '{"cart_value": 790, "delivery_distance": 2235, "number_of_items": 4, "time": "2024-01-15T13:00:00Z"}'
+```
 
 ## Tests
->python manage.py test
+```bash
+python manage.py test
+```
 
 ## Contact
  * Author: Baptiste RIFFARD

@@ -1,11 +1,16 @@
 from django.test import TestCase
 from django.urls import reverse
 import json
+import logging
+
+logger = logging.getLogger('log')
 
 class CalculateDeliveryTestCase(TestCase):
+    """Test the calculate_delivery view."""
+    logger.info('Testing the calculate_delivery view.')
     def setUp(self):
         # Set up the URL for the calculate_delivery view
-        self.url = reverse('calculate_delivery')  # Replace 'calculate_delivery' with the actual name of your view.
+        self.url = reverse('calculate_delivery')
 
     def test_successful_calculation(self):
         """Test the successful calculation of delivery fee."""
@@ -62,3 +67,4 @@ class CalculateDeliveryTestCase(TestCase):
         self.assertIn('error', json_response)
         self.assertIn('cart_value', json_response['error'])
 
+    logger.info('Finished testing the calculate_delivery view.')

@@ -81,7 +81,7 @@ class DeliveryFeeCalculator:
     def calculate_surcharge_items(self, items: int) -> int:
         """Calculates the surcharge based on the number of items."""
         try:
-            cost = 0
+            cost: int = 0
             if items <= self.SURCHARGE_ITEM_THRESHOLD:
                 return 0
             if items > self.BULK_FEE_THRESHOLD:
