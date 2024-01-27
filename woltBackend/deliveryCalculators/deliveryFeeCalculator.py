@@ -7,21 +7,21 @@ logger = logging.getLogger('log')
 class DeliveryFeeCalculator:
     """Calculates the delivery fee based on various factors."""
 
-    MIN_CART_VALUE = 1000
-    MIN_DISTANCE_DELIVERY = 1000
-    DISTANCE_THRESHOLD = 500
-    MIN_DISTANCE_DELIVERY_FEE = 200
-    COST_SURCHARGE_ITEM = 50
-    SURCHARGE_ITEM_THRESHOLD = 4
-    COST_BULK_FEE = 120
-    BULK_FEE_THRESHOLD = 12
-    RUSH_HOUR_START = 15
-    RUSH_HOUR_END = 19
-    RUSH_HOUR_DAY = "Friday"
-    SURCHARGE_RUSH_HOUR = 120
-    MAX_DELIVERY_FEE = 1500
+    MIN_CART_VALUE: int = 1000
+    MIN_DISTANCE_DELIVERY: int = 1000
+    DISTANCE_THRESHOLD: int = 500
+    MIN_DISTANCE_DELIVERY_FEE: int = 200
+    COST_SURCHARGE_ITEM: int = 50
+    SURCHARGE_ITEM_THRESHOLD: int = 4
+    COST_BULK_FEE: int = 120
+    BULK_FEE_THRESHOLD: int = 12
+    RUSH_HOUR_START: int = 15
+    RUSH_HOUR_END: int = 19
+    RUSH_HOUR_DAY: str = "Friday"
+    SURCHARGE_RUSH_HOUR: int = 120
+    MAX_DELIVERY_FEE: int = 1500
 
-    def calculate_cost(self, data):
+    def calculate_cost(self, data: dict) -> int:
         """Calculates the total delivery cost based on input data.
 
         Args:
@@ -45,7 +45,7 @@ class DeliveryFeeCalculator:
             
 			#Apply rush hour surcharge if applicable
             if rush_hour:
-                total_cost = (total_cost * self.SURCHARGE_RUSH_HOUR) / 100
+                total_cost = int((total_cost * self.SURCHARGE_RUSH_HOUR) / 100)
 
 			#Apply maximum delivery fee
             if total_cost > self.MAX_DELIVERY_FEE:
@@ -57,7 +57,7 @@ class DeliveryFeeCalculator:
             logger.error(f"{str(e)}")
             raise
 
-    def calculate_surcharge(self, cart_value):
+    def calculate_surcharge(self, cart_value: int) -> int:
         """Calculates the surcharge based on the cart value."""
         try:
             if cart_value < self.MIN_CART_VALUE:
@@ -67,7 +67,7 @@ class DeliveryFeeCalculator:
             logger.error(f"{str(e)}")
             raise
 
-    def calculate_delivery_fee_distance(self, distance):
+    def calculate_delivery_fee_distance(self, distance: int) -> int:
         """Calculates the delivery fee based on the delivery distance."""
         try:
             if distance < self.MIN_DISTANCE_DELIVERY:
@@ -78,7 +78,7 @@ class DeliveryFeeCalculator:
             logger.error(f"{str(e)}")
             raise
 
-    def calculate_surcharge_items(self, items):
+    def calculate_surcharge_items(self, items: int) -> int:
         """Calculates the surcharge based on the number of items."""
         try:
             cost = 0
@@ -92,7 +92,7 @@ class DeliveryFeeCalculator:
             logger.error(f"{str(e)}")
             raise
 
-    def calculate_time(self, time):
+    def calculate_time(self, time: str) -> bool:
         """Checks if the delivery falls within the rush hour."""
         try:
             time_object = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")

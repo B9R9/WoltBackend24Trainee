@@ -133,12 +133,6 @@ LOGGING = {
         }
     },
     'handlers': {
-        'file_errors': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': 'error_logs.log',  # Nom du fichier de logs
-            'formatter': 'standard',
-        },
         'file_log': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
@@ -160,11 +154,6 @@ LOGGING = {
             'handlers': ['file_log', 'console'],
             'level': 'DEBUG',
             'propagate': True,
-        },
-	    'error_logger': {
-            'handlers': ['file_errors', 'console'],
-            'level': 'ERROR',
-            'propagate': False,
         },
     },
 }

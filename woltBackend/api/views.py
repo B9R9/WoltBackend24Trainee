@@ -1,8 +1,9 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from deliveryCalculators.deliveryFeeCalculator import DeliveryFeeCalculator
 from deliveryCalculators.utils import DeliveryForm
+from typing import Union, Dict
 import logging
 import json
 
@@ -13,7 +14,7 @@ calculator = DeliveryFeeCalculator()
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 @csrf_exempt
 @require_POST
-def calculate_delivery(request):
+def calculate_delivery(request: HttpRequest) -> JsonResponse:
 	"""
     View to calculate delivery fees based on the input data.
 
