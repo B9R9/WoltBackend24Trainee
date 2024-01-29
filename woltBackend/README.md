@@ -105,14 +105,14 @@ python manage.py runserver <address:port>
 By default, the server uses localhost:8000. If you specify a different address, make sure to adjust the ALLOWED_HOSTS configuration in your [settings.py](woltBackend/settings.py) file to include that address. For example:
 ```
 #setting.py
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'your_address']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'your_address']
 ```
 Make sure to update this list according to your specific deployment needs.
 
 ## Calling the API with curl:
 Exemple curl command:
 ```bash
-curl --request POST "http://0.0.0.0:8000/deliveryCalculator/" --header 'Content-Type: application/json' --data '{"cart_value": 790, "delivery_distance": 2235, "number_of_items": 4, "time": "2024-01-15T13:00:00Z"}'
+curl --request POST "http://localhost:8000/deliveryCalculator/" --header 'Content-Type: application/json' --data '{"cart_value": 790, "delivery_distance": 2235, "number_of_items": 4, "time": "2024-01-15T13:00:00Z"}'
 ```
 
 ## Tests
