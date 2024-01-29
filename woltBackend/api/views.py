@@ -34,8 +34,8 @@ def calculate_delivery(request: HttpRequest) -> JsonResponse:
 			logs.info(f"Response : {cost}")
 			return JsonResponse({'delivery_fee': cost})
 		else:
-			logs.error(f"Form error")
-			return JsonResponse({'error': form.errors}, status=400)
+			logs.error(f"Error processing request: {form.errors}")
+			return JsonResponse({'error': 'Bad Request'}, status=400)
 	except (KeyError, TypeError) as e:
-		logs.error(f"{str(e)}")
-		return JsonResponse({'error': 'Invalid input data'}, status=400)
+		logs.error(f"Error processing request: {str(e)}")
+		return JsonResponse({'error': 'Bad Request'}, status=400)

@@ -37,7 +37,7 @@ class CalculateDeliveryTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         json_response = response.json()
         self.assertIn('error', json_response)
-        self.assertIn('number_of_items', json_response['error'])
+        self.assertIn('Bad Request', json_response['error'])
 
     def test_invalid_data(self):
         """Test handling invalid data types in the input."""
@@ -51,7 +51,7 @@ class CalculateDeliveryTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         json_response = response.json()
         self.assertIn('error', json_response)
-        self.assertIsInstance(json_response['error'], dict)
+        self.assertIsInstance(json_response['error'], str)
 
     def test_negative_cart_value(self):
         """Test handling a negative value for cart_value."""
@@ -65,6 +65,6 @@ class CalculateDeliveryTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         json_response = response.json()
         self.assertIn('error', json_response)
-        self.assertIn('cart_value', json_response['error'])
+        self.assertIn('Bad Request', json_response['error'])
 
     logger.info('Finished testing the calculate_delivery view.')

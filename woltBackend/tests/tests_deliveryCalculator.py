@@ -3,6 +3,8 @@ from datetime import datetime
 from deliveryCalculators.deliveryFeeCalculator import DeliveryFeeCalculator
 from deliveryCalculators.utils import DeliveryForm
 import logging
+import math
+
 
 logger = logging.getLogger('log')
 
@@ -30,7 +32,9 @@ class DeliveryFeeCalculatorTest(TestCase):
         }
         calculator = DeliveryFeeCalculator()
         cost = calculator.calculate_cost(data)
-        self.assertEqual(cost, (1000 - 1) + 200, f"Expected cost: 1199, got {cost}")
+        print(data)
+        expected_cost = (1000 - 1) + 200
+        self.assertEqual(cost, expected_cost, f"Expected cost: {expected_cost}, got {cost}")
 
     def test_calculate_cost_maximum_values(self):
         """Test the calculate_cost method with maximum input values."""
@@ -54,8 +58,22 @@ class DeliveryFeeCalculatorTest(TestCase):
         }
         calculator = DeliveryFeeCalculator()
         cost = calculator.calculate_cost(data)
-        expected_cost = (1000 - 800) + (200 + 100) + ((5 - 4) * 50)
+        expected_cost = (1000 - 800) + (math.ceil(1200 / 500) * 100) + ((5 - 4) * 50)
         expected_cost_with_surcharge = (expected_cost * 120) / 100
+        self.assertEqual(cost, expected_cost_with_surcharge, f"Expected cost: {expected_cost_with_surcharge}, got {cost}")
+    
+    def test_calculate_cost_rush_hour_surcharge_2(self):
+        """Test the calculate_cost method during rush hour to check the surcharge."""
+        data = {
+            'cart_value': 790,
+            'delivery_distance': 1000,
+            'number_of_items': 4,
+            'time': '2024-01-19T19:30:00Z',
+        }
+        calculator = DeliveryFeeCalculator()
+        cost = calculator.calculate_cost(data)
+        expected_cost = (1000 - 790) + (200) + ((4 - 4) * 50)
+        expected_cost_with_surcharge = expected_cost
         self.assertEqual(cost, expected_cost_with_surcharge, f"Expected cost: {expected_cost_with_surcharge}, got {cost}")
 
     def test_calculate_cost_maximum_delivery_fee(self):
@@ -127,14 +145,30 @@ class DeliveryFormTest(TestCase):
     def test_non_integer_delivery_distance(self):
         """Test the DeliveryForm with a non-integer value for delivery_distance."""
         data = {
-            'cart_value': 800,
+            'cart_value': 800.5,
             'delivery_distance': 1200.5,
+            'number_of_items': 5.5,
+            'time': '2024-01-15T16:00:00Z',
+        }
+        print("******************************")
+        print(data)
+        form = DeliveryForm(data)
+        print(form.is_valid())
+        self.assertFalse(form.is_valid())
+        self.assertIn('delivery_distance', form.errors)
+        self.assertIn('Enter a whole number.', form.errors['delivery_distance'][0])
+    
+    def test_cart_value_greater_than_20000(self):
+        """Test the DeliveryCalculatir with a cart_value greater than 2000."""
+        data = {
+            'cart_value': 25000,
+            'delivery_distance': 1200,
             'number_of_items': 5,
             'time': '2024-01-15T16:00:00Z',
         }
         form = DeliveryForm(data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('delivery_distance', form.errors)
-        self.assertIn('Enter a whole number.', form.errors['delivery_distance'][0])
+        calculator = DeliveryFeeCalculator()
+        cost = calculator.calculate_cost(data)
+        self.assertEqual(cost, 0, f"Expected cost: 0, got {cost}")
 
     logger.info('End of DeliveryForm class tests.')

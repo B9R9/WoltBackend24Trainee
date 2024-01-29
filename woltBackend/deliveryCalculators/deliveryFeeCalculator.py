@@ -1,6 +1,6 @@
 import logging
 import math
-from datetime import datetime, time
+from datetime import datetime
 
 logger = logging.getLogger('log')
 
@@ -15,11 +15,12 @@ class DeliveryFeeCalculator:
     SURCHARGE_ITEM_THRESHOLD: int = 4
     COST_BULK_FEE: int = 120
     BULK_FEE_THRESHOLD: int = 12
-    RUSH_HOUR_START: int = 15
-    RUSH_HOUR_END: int = 19
+    RUSH_HOUR_START: int = datetime.strptime("15:00", "%H:%M").time()
+    RUSH_HOUR_END: int = datetime.strptime("19:00", "%H:%M").time()
     RUSH_HOUR_DAY: str = "Friday"
     SURCHARGE_RUSH_HOUR: int = 120
     MAX_DELIVERY_FEE: int = 1500
+    MAX_CART_VALUE: int = 20000
 
     def calculate_cost(self, data: dict) -> int:
         """Calculates the total delivery cost based on input data.
@@ -34,6 +35,9 @@ class DeliveryFeeCalculator:
             Exception: If any error occurs during the calculation.
         """
         try:
+            #check if cart value is equal or greater than 20000
+            if data['cart_value'] >= self.MAX_CART_VALUE:
+                return 0
 			#Calculte individual costs
             surcharge = self.calculate_surcharge(data['cart_value'])
             delivery_fee_distance = self.calculate_delivery_fee_distance(data['delivery_distance'])
@@ -45,7 +49,7 @@ class DeliveryFeeCalculator:
             
 			#Apply rush hour surcharge if applicable
             if rush_hour:
-                total_cost = int((total_cost * self.SURCHARGE_RUSH_HOUR) / 100)
+                total_cost: int = int((total_cost * self.SURCHARGE_RUSH_HOUR) / 100)
 
 			#Apply maximum delivery fee
             if total_cost > self.MAX_DELIVERY_FEE:
@@ -70,7 +74,7 @@ class DeliveryFeeCalculator:
     def calculate_delivery_fee_distance(self, distance: int) -> int:
         """Calculates the delivery fee based on the delivery distance."""
         try:
-            if distance < self.MIN_DISTANCE_DELIVERY:
+            if distance <= self.MIN_DISTANCE_DELIVERY:
                 return self.MIN_DISTANCE_DELIVERY_FEE
             cost = math.ceil(distance / self.DISTANCE_THRESHOLD)
             return cost * 100
@@ -97,8 +101,8 @@ class DeliveryFeeCalculator:
         try:
             time_object = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
             day_of_the_week = time_object.strftime("%A")
-            hour = time_object.hour
-            if day_of_the_week == self.RUSH_HOUR_DAY and self.RUSH_HOUR_START <= hour <= self.RUSH_HOUR_END:
+            hour = time_object.time()
+            if day_of_the_week == self.RUSH_HOUR_DAY and self.RUSH_HOUR_START <= hour < self.RUSH_HOUR_END:
                 return True
             return False
         except Exception as e:
