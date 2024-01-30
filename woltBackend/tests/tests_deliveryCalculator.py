@@ -32,7 +32,6 @@ class DeliveryFeeCalculatorTest(TestCase):
         }
         calculator = DeliveryFeeCalculator()
         cost = calculator.calculate_cost(data)
-        print(data)
         expected_cost = (1000 - 1) + 200
         self.assertEqual(cost, expected_cost, f"Expected cost: {expected_cost}, got {cost}")
 
@@ -150,10 +149,7 @@ class DeliveryFormTest(TestCase):
             'number_of_items': 5.5,
             'time': '2024-01-15T16:00:00Z',
         }
-        print("******************************")
-        print(data)
         form = DeliveryForm(data)
-        print(form.is_valid())
         self.assertFalse(form.is_valid())
         self.assertIn('delivery_distance', form.errors)
         self.assertIn('Enter a whole number.', form.errors['delivery_distance'][0])
